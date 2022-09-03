@@ -60,7 +60,6 @@ def get_tweets_v2(start_time, end_time, max_results, query_type):
             # pagination
             with tqdm(total=max_results) as pbar:
                 while next_token and len(results) < max_results:
-                    pbar.update(100)
                     url = 'https://api.twitter.com/2/tweets/search/recent?query={}&start_time={}&end_time={}&max_results=100&tweet.fields=author_id,created_at,text&next_token={}'.format(
                         keyword, start_time, end_time, next_token)
                     response = requests.request('GET', url, headers=headers)
@@ -68,11 +67,12 @@ def get_tweets_v2(start_time, end_time, max_results, query_type):
                     if 'data' in response.json():
                         results.extend(response.json()['data'])
 
-
-                    if 'next_token' in response.json()['meta']:
+                    if 'meta' in response.json() and 'next_token' in response.json()['meta']:
                         next_token = response.json()['meta']['next_token']
                     else:
+                        print('No more tweets')
                         next_token = None
+                    pbar.update(100)
 
             return results
 
