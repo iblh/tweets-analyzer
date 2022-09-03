@@ -1,11 +1,11 @@
 import os
 import json
-import time
 import requests
 import argparse
 from tqdm import tqdm
 from datetime import datetime, timedelta
 
+# credentials
 import config
 API_KEY = config.API_KEY
 API_SECRET = config.API_SECRET
@@ -13,13 +13,27 @@ BEARER_TOKEN = config.BEARER_TOKEN
 
 
 def get_end_time(start_time):
+    """
+    param: start_time: string, format: YYYY-MM-DDTHH:MM:SSZ
+    return: end_time: string, format: YYYY-MM-DDTHH:MM:SSZ
+    """
     start_time = datetime.strptime(start_time, '%Y-%m-%dT%H:%M:%S.000Z')
     end_time = start_time + timedelta(hours=1)
     return end_time.strftime('%Y-%m-%dT%H:%M:%S.000Z')
 
 
 def get_tweets_v2(start_time, end_time, max_results, query_type):
+    """
+    param: 
+        start_time: string, format: YYYY-MM-DDTHH:MM:SSZ
+        end_time: string, format: YYYY-MM-DDTHH:MM:SSZ
+        max_results: int, max number of tweets to return
+        query_type: string, 'user' or 'keyword'
+    return:
+        tweets: list of tweets
+    """
     headers = {'Authorization': 'Bearer {}'.format(BEARER_TOKEN)}
+
     if query_type == 'user':
         userlist = input('Enter a list of username, separated by commas:')
         userlist = userlist.split(',')
@@ -45,6 +59,7 @@ def get_tweets_v2(start_time, end_time, max_results, query_type):
             else:
                 return []
         else:
+            # if max_results > 100, we need to loop through the pages
             results = []
             url = 'https://api.twitter.com/2/tweets/search/recent?query={}&start_time={}&end_time={}&max_results=100&tweet.fields=author_id,created_at,text'.format(
                 keyword, start_time, end_time)
@@ -52,6 +67,7 @@ def get_tweets_v2(start_time, end_time, max_results, query_type):
             if 'data' in response.json():
                 results.extend(response.json()['data'])
 
+            # check if there are more pages
             if 'next_token' in response.json()['meta']:
                 next_token = response.json()['meta']['next_token']
             else:
@@ -67,6 +83,7 @@ def get_tweets_v2(start_time, end_time, max_results, query_type):
                     if 'data' in response.json():
                         results.extend(response.json()['data'])
 
+                    # check if there are more pages
                     if 'meta' in response.json() and 'next_token' in response.json()['meta']:
                         next_token = response.json()['meta']['next_token']
                     else:
@@ -78,6 +95,11 @@ def get_tweets_v2(start_time, end_time, max_results, query_type):
 
 
 def export2file(tweets, folder):
+    """
+    param:
+        tweets: list of tweets
+        folder: string, folder to save the tweets
+    """
     if not os.path.exists(folder):
         # create folder if not exist
         os.makedirs(folder)
@@ -99,6 +121,7 @@ def export2file(tweets, folder):
 
 
 if __name__ == '__main__':
+    # parse arguments
     parser = argparse.ArgumentParser()
     parser.add_argument('--query-type', help='query type',
                         choices=['keyword', 'user'], required=True)
@@ -109,7 +132,7 @@ if __name__ == '__main__':
     parser.add_argument('--max-results', help='max results',
                         required=True, type=int)
 
-    # arguments
+    # initialize variables
     args = parser.parse_args()
     start_time = '{}T{:02d}:00:00.000Z'.format(args.date, args.hour)
     end_time = get_end_time(start_time)

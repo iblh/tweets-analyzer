@@ -17,3 +17,12 @@ python downloader.py --query-type keyword  --date 2022-08-30 --hour 10 --max-res
 python downloader.py --query-type user  --date 2022-08-29 --hour 20 --max-results 200
 > username: nasa
 ```
+
+### extractor.py
+
+```bash
+python extractor.py -h
+usage: extractor.py [-h] --date DATE --hour HOUR
+
+python extractor.py --date 2022-09-01 --hour 10
+```
