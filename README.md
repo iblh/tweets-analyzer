@@ -59,3 +59,41 @@ usage: extractor.py [-h] --date DATE --hour HOUR
 
 python extractor.py --date 2022-09-01 --hour 10
 ```
+
+## Output
+
+There are three output files for each tweets dataset.
+- `text.txt`: clean text of tweets
+- `hashtags_count.txt`: hashtags and their counts
+- `username_count.txt`: mentioned username and their counts
+
+### text.txt sample
+
+```txt
+"RT @dos_xyz: Hello Solana, We are pleased to announce our Hackathon Submission: DreamOS A new user experience for crypto - it is the fir"
+"RT @joshtokitaaaaa: HELLO P-POP KINGS!! @SB19Official #SB19 #WYAT #WhereYouAtSB19 https://t.co/ZoXd2Ihhgi"
+"RT @humansdotai: Hello, humans! Meet @lucian2k, our Head of User Product! #HumansOfHumansDotAI #Team #Blockchain #AI https://t.co/dq1z5Py"
+"@GeorgeBeany978 Hello George, I've had a look on railcam data and it's a ballast machine Hope this helps. JASON https://t.co/ngobSTtM21"
+"@DVTLJH96 Hello ang cute mo naman"
+```
+
+### hashtags_count.txt sample
+
+```txt
+#HAPPYJKDAY 1119
+#HappyBirthdayJungkook 1030
+#JUNGKOOKDAY 768
+#Happy_JungKook_Day🐇 524
+#TinyTAN 524
+```
+
+### username_count.txt sample
+
+```txt
+@SamsungLevant 1558
+@janusrose 502
+@Genshin_7 349
+@kevboucher 184
+@DUALIPA 184
+@caroandlace 178
+```

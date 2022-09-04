@@ -60,7 +60,9 @@ def extract_username(df, date, hour):
     for tweet in df['text']:
         for word in tweet.split():
             if word.startswith('@') and len(word) > 1:
-                word = word.replace(':', '')
+                # username can only contain alphanumeric characters and underscores
+                word = re.sub(r'[^A-Za-z0-9_]+', '', word)
+                word = '@' + word
                 if word in usernames:
                     usernames[word] += 1
                 else:
